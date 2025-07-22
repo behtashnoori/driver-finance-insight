@@ -30,89 +30,75 @@ const LoginPage = () => {
       <div className="absolute top-20 left-20 w-32 h-32 bg-primary/10 rounded-full blur-xl animate-pulse"></div>
       <div className="absolute bottom-20 right-20 w-48 h-48 bg-accent/10 rounded-full blur-xl animate-pulse delay-1000"></div>
       
-      <div className="relative z-10 w-full max-w-md animate-fade-in-up">
-        <Card className="card-modern shadow-elegant border-0">
-          <CardHeader className="text-center pb-8">
-            <div className="flex justify-center mb-6">
-              <div className="bg-gradient-primary p-4 rounded-full shadow-elegant">
-                <Truck className="w-8 h-8 text-white" />
+      <div className="relative z-10 w-full max-w-lg px-4 animate-fade-in-up">
+        <Card className="card-modern shadow-elegant border-0 bg-card/95 backdrop-blur-sm">
+          <CardHeader className="text-center pb-6">
+            <div className="flex justify-center mb-8">
+              <div className="bg-gradient-primary p-6 rounded-3xl shadow-elegant">
+                <Truck className="w-12 h-12 text-white" />
               </div>
             </div>
-            <CardTitle className="text-2xl font-bold gradient-text mb-2">
+            <CardTitle className="text-4xl font-bold gradient-text mb-3">
               سامانه راننده
             </CardTitle>
-            <CardDescription className="text-muted-foreground">
-              وارد حساب کاربری خود شوید
+            <CardDescription className="text-lg text-muted-foreground">
+              برای ورود اطلاعات خود را وارد کنید
             </CardDescription>
           </CardHeader>
 
-          <CardContent className="space-y-6">
-            <form onSubmit={handleLogin} className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="nationalCode" className="text-sm font-medium flex items-center gap-2">
-                  <User className="w-4 h-4" />
-                  کد ملی
+          <CardContent className="space-y-8 px-6 pb-8">
+            <form onSubmit={handleLogin} className="space-y-8">
+              <div className="space-y-4">
+                <Label htmlFor="nationalCode" className="text-lg font-bold flex items-center gap-3 text-foreground">
+                  <div className="p-2 bg-primary/10 rounded-xl">
+                    <User className="w-6 h-6 text-primary" />
+                  </div>
+                  کد ملی شما
                 </Label>
                 <Input
                   id="nationalCode"
                   type="text"
-                  placeholder="کد ملی خود را وارد کنید"
+                  placeholder="مثال: 1234567890"
                   value={nationalCode}
                   onChange={(e) => setNationalCode(e.target.value)}
-                  className="input-modern h-12 text-right"
+                  className="input-modern h-16 text-right text-xl px-6 border-2"
                   required
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="smartCard" className="text-sm font-medium flex items-center gap-2">
-                  <CreditCard className="w-4 h-4" />
-                  شماره هوشمند
+              <div className="space-y-4">
+                <Label htmlFor="smartCard" className="text-lg font-bold flex items-center gap-3 text-foreground">
+                  <div className="p-2 bg-primary/10 rounded-xl">
+                    <CreditCard className="w-6 h-6 text-primary" />
+                  </div>
+                  شماره کارت هوشمند
                 </Label>
                 <Input
                   id="smartCard"
                   type="text"
-                  placeholder="شماره کارت هوشمند"
+                  placeholder="مثال: 123456789"
                   value={smartCardNumber}
                   onChange={(e) => setSmartCardNumber(e.target.value)}
-                  className="input-modern h-12 text-right"
+                  className="input-modern h-16 text-right text-xl px-6 border-2"
                   required
                 />
               </div>
 
               <Button
                 type="submit"
-                className="btn-primary w-full h-12 text-lg font-medium"
+                className="btn-primary w-full h-20 text-2xl font-bold rounded-2xl"
                 disabled={isLoading}
               >
                 {isLoading ? (
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    در حال ورود...
+                  <div className="flex items-center gap-3">
+                    <div className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    لطفا صبر کنید...
                   </div>
                 ) : (
-                  'ورود'
+                  'ورود به سامانه'
                 )}
               </Button>
             </form>
-
-            <div className="flex justify-between pt-4 border-t border-border">
-              <Button
-                variant="ghost"
-                className="interactive-hover flex items-center gap-2 text-muted-foreground"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                بازگشت
-              </Button>
-              
-              <Button
-                variant="ghost"
-                className="interactive-hover flex items-center gap-2 text-muted-foreground"
-              >
-                <LogOut className="w-4 h-4" />
-                خروج
-              </Button>
-            </div>
           </CardContent>
         </Card>
 

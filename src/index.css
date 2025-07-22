@@ -116,9 +116,13 @@
   .btn-primary {
     @apply bg-primary text-primary-foreground hover:bg-primary/90;
     @apply transition-all duration-300 ease-out;
-    @apply hover:scale-105 hover:shadow-lg;
+    @apply hover:scale-[1.02] hover:shadow-2xl active:scale-[0.98];
+    @apply touch-manipulation;
     border-radius: var(--border-radius-modern);
     box-shadow: var(--shadow-elegant);
+    min-height: 60px;
+    font-size: 1.125rem;
+    font-weight: 700;
   }
 
   .btn-secondary {
@@ -161,9 +165,27 @@
   /* Form Inputs */
   .input-modern {
     @apply bg-input border border-border text-foreground;
-    @apply focus:ring-2 focus:ring-ring focus:border-transparent;
+    @apply focus:ring-4 focus:ring-ring/30 focus:border-primary;
     @apply transition-all duration-300 ease-out;
+    @apply touch-manipulation;
     border-radius: var(--border-radius-modern);
+    min-height: 56px;
+    font-size: 1.125rem;
+    padding: 0 1rem;
+  }
+
+  /* Mobile-First Responsive Design */
+  @media (max-width: 768px) {
+    .btn-primary {
+      min-height: 64px;
+      font-size: 1.25rem;
+    }
+    
+    .input-modern {
+      min-height: 64px;
+      font-size: 1.25rem;
+      padding: 0 1.5rem;
+    }
   }
 }
 
