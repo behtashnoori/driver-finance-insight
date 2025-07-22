@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سامانه راننده - داشبورد</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: hsl(240, 10%, 3.9%);
+            color: hsl(0, 0%, 98%);
+            min-height: 100vh;
+            padding: 1rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .bg-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, hsla(142, 76%, 36%, 0.03) 0%, hsl(240, 10%, 3.9%) 50%, hsla(240, 3.7%, 15.9%, 0.03) 100%);
+        }
+
+        .floating-shape {
+            position: absolute;
+            top: 10rem;
+            right: 5rem;
+            width: 16rem;
+            height: 16rem;
+            background: hsla(142, 76%, 36%, 0.05);
+            border-radius: 50%;
+            filter: blur(60px);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 96rem;
+            margin: 0 auto;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            background: linear-gradient(135deg, hsl(142, 76%, 36%), hsl(142, 76%, 45%));
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 40px -15px hsla(142, 76%, 36%, 0.3);
+        }
+
+        .user-avatar svg {
+            width: 1.5rem;
+            height: 1.5rem;
+            color: white;
+        }
+
+        .welcome-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, hsl(142, 76%, 36%), hsl(142, 76%, 45%));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.25rem;
+        }
+
+        .welcome-text p {
+            color: hsl(240, 5%, 64.9%);
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: hsl(240, 5%, 64.9%);
+        }
+
+        .btn-ghost:hover {
+            background: hsla(240, 3.7%, 15.9%, 0.5);
+            transform: scale(1.05);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(145deg, hsl(240, 10%, 3.9%), hsl(240, 10%, 5%));
+            border: 1px solid hsl(240, 3.7%, 15.9%);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px -5px hsla(0, 0%, 0%, 0.4);
+            transition: all 0.3s ease;
+            animation: scaleIn 0.3s ease-out;
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 20px 80px -20px hsla(142, 76%, 36%, 0.2);
+            transform: translateY(-4px);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            background: hsla(240, 3.7%, 15.9%, 0.1);
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: hsl(240, 5%, 64.9%);
+            font-size: 0.875rem;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .main-card {
+            background: linear-gradient(145deg, hsl(240, 10%, 3.9%), hsl(240, 10%, 5%));
+            border: 1px solid hsl(240, 3.7%, 15.9%);
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px -5px hsla(0, 0%, 0%, 0.4);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid hsl(240, 3.7%, 15.9%);
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .card-description {
+            color: hsl(240, 5%, 64.9%);
+            font-size: 0.875rem;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .select {
+            padding: 0.75rem 1rem;
+            background: hsl(240, 3.7%, 15.9%);
+            border: 1px solid hsl(240, 3.7%, 15.9%);
+            border-radius: 1rem;
+            color: hsl(0, 0%, 98%);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .select:focus {
+            outline: none;
+            border-color: hsl(142, 76%, 36%);
+            box-shadow: 0 0 0 2px hsla(142, 76%, 36%, 0.2);
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: hsla(240, 3.7%, 15.9%, 0.05);
+            border: 1px solid hsla(240, 3.7%, 15.9%, 0.5);
+            border-radius: 0.75rem;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .status-item:hover {
+            background: hsla(240, 3.7%, 15.9%, 0.1);
+            transform: scale(1.02);
+        }
+
+        .status-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background: hsla(142, 76%, 36%, 0.1);
+            color: hsl(142, 76%, 36%);
+            border: 1px solid hsla(142, 76%, 36%, 0.2);
+        }
+
+        .badge-warning {
+            background: hsla(45, 93%, 47%, 0.1);
+            color: hsl(45, 93%, 47%);
+            border: 1px solid hsla(45, 93%, 47%, 0.2);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: linear-gradient(135deg, hsl(142, 76%, 36%), hsl(142, 76%, 45%));
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 40px -15px hsla(142, 76%, 36%, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: scale(1.05);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .recent-files {
+            border-top: 1px solid hsl(240, 3.7%, 15.9%);
+            padding-top: 1rem;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            background: hsla(240, 3.7%, 15.9%, 0.05);
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .file-item:hover {
+            background: hsla(240, 3.7%, 15.9%, 0.1);
+            transform: scale(1.02);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid hsl(240, 3.7%, 15.9%);
+            color: hsl(240, 5%, 64.9%);
+            font-size: 0.875rem;
+        }
+
+        .loading-spinner {
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .filters {
+                grid-template-columns: 1fr;
+            }
+            
+            .floating-shape {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-overlay"></div>
+    <div class="floating-shape"></div>
+    
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                </div>
+                <div class="welcome-text">
+                    <h1>سلام سیدرضا جمشیدی چطوری؟</h1>
+                    <p>سلامت تو مهمه... سرعت مجاز یادت نره 🚛</p>
+                </div>
+            </div>
+            
+            <div class="header-buttons">
+                <button class="btn btn-ghost" onclick="history.back()">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    بازگشت
+                </button>
+                
+                <button class="btn btn-ghost" onclick="window.location.href='/logout'">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                    </svg>
+                    خروج
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ bills_count or '24' }}</div>
+                        <div class="stat-label">تعداد بارنامه</div>
+                    </div>
+                    <div class="stat-icon" style="color: hsl(142, 76%, 36%);">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ claims_amount or '2,500,000' }} <span style="font-size: 0.875rem; color: hsl(240, 5%, 64.9%);">تومان</span></div>
+                        <div class="stat-label">مطالبات</div>
+                    </div>
+                    <div class="stat-icon" style="color: hsl(142, 76%, 36%);">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ trips_count or '18' }}</div>
+                        <div class="stat-label">سفرهای ماه</div>
+                    </div>
+                    <div class="stat-icon" style="color: hsl(217, 91%, 60%);">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0M15 17a2 2 0 104 0"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Financial Status -->
+            <div class="main-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20" style="color: hsl(142, 76%, 36%);">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        وضعیت بارنامه‌ها
+                    </div>
+                    <div class="card-description">گزارش کامل بارنامه‌ها و وضعیت مالی</div>
+                </div>
+                
+                <div class="card-content">
+                    <!-- Filters -->
+                    <div class="filters">
+                        <select class="select" id="yearFilter">
+                            <option value="all">همه سال‌ها</option>
+                            <option value="1403">1403</option>
+                            <option value="1402">1402</option>
+                            <option value="1401">1401</option>
+                        </select>
+                        
+                        <select class="select" id="monthFilter">
+                            <option value="all">همه ماه‌ها</option>
+                            <option value="12">دی</option>
+                            <option value="11">آذر</option>
+                            <option value="10">آبان</option>
+                        </select>
+                    </div>
+
+                    <!-- Status Items -->
+                    <div class="status-item">
+                        <div class="status-info">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20" style="color: hsl(142, 76%, 36%);">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            <div>
+                                <div style="font-weight: 500;">بارنامه‌های تایید شده</div>
+                                <div style="font-size: 0.875rem; color: hsl(240, 5%, 64.9%);">آخرین بروزرسانی: امروز</div>
+                            </div>
+                        </div>
+                        <div class="badge badge-success">18 مورد</div>
+                    </div>
+
+                    <div class="status-item">
+                        <div class="status-info">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20" style="color: hsl(217, 91%, 60%);">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            <div>
+                                <div style="font-weight: 500;">بارنامه‌های در انتظار</div>
+                                <div style="font-size: 0.875rem; color: hsl(240, 5%, 64.9%);">نیاز به بررسی</div>
+                            </div>
+                        </div>
+                        <div class="badge badge-warning">6 مورد</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions Panel -->
+            <div class="main-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20" style="color: hsl(142, 76%, 36%);">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V16a1 1 0 01-2 2z"></path>
+                        </svg>
+                        عملیات
+                    </div>
+                    <div class="card-description">دانلود گزارش‌ها و مدارک</div>
+                </div>
+                
+                <div class="card-content">
+                    <button class="btn-primary" id="downloadBtn" onclick="handleDownload()">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V16a1 1 0 01-2 2z"></path>
+                        </svg>
+                        <span id="downloadText">دانلود گزارش کامل</span>
+                        <div id="downloadSpinner" class="loading-spinner" style="display: none;"></div>
+                    </button>
+
+                    <div class="recent-files">
+                        <h4 style="font-size: 0.875rem; color: hsl(240, 5%, 64.9%); margin-bottom: 0.5rem;">فایل‌های اخیر</h4>
+                        <div class="file-item">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16" style="color: hsl(240, 5%, 64.9%);">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            <span style="font-size: 0.875rem;">گزارش دی ماه</span>
+                        </div>
+                        <div class="file-item">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16" style="color: hsl(240, 5%, 64.9%);">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            <span style="font-size: 0.875rem;">گزارش آذر ماه</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>نسخه 0.1.0 - تماس با ما - © 2025</p>
+        </div>
+    </div>
+
+    <script>
+        function handleDownload() {
+            const downloadBtn = document.getElementById('downloadBtn');
+            const downloadText = document.getElementById('downloadText');
+            const downloadSpinner = document.getElementById('downloadSpinner');
+            
+            // Show loading state
+            downloadBtn.disabled = true;
+            downloadText.textContent = 'در حال دانلود...';
+            downloadSpinner.style.display = 'block';
+            
+            // Simulate download process
+            setTimeout(() => {
+                // Reset button state
+                downloadBtn.disabled = false;
+                downloadText.textContent = 'دانلود گزارش کامل';
+                downloadSpinner.style.display = 'none';
+                
+                // Here you would trigger the actual download
+                // window.location.href = '/download-report';
+            }, 2000);
+        }
+
+        // Add interactive effects
+        document.querySelectorAll('.status-item, .file-item').forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.02)';
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>
